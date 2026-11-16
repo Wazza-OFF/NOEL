@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Le Grimoire des Veilles</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&family=IM+Fell+English:ital@0;1&display=swap">
+<style>
+:root{--bg:#f4f1ea;--fg:#1d2433;--card:#fff;--mut:#6b7385;--acc:#3b6ea8;--ok:#2f8f5b;--line:#d8d3c6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1424;--fg:#e8ecf5;--card:#18203a;--mut:#97a1b8;--acc:#8fc3ff;--ok:#6fd49a;--line:#2a3558;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1424;--fg:#e8ecf5;--card:#18203a;--mut:#97a1b8;--acc:#8fc3ff;--ok:#6fd49a;--line:#2a3558;color-scheme:dark}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.5 Georgia,'Times New Roman',serif;min-height:100%}
+main{position:relative;z-index:1;max-width:560px;margin:0 auto;padding:16px}
+h1{font-size:1.5rem;margin:.2em 0;text-align:center}
+.sub{text-align:center;color:var(--mut);margin:0 0 12px}
+nav{display:flex;gap:6px;margin:12px 0}
+nav button{flex:1;padding:9px 4px;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:10px;font:inherit;font-size:.9rem}
+nav button.on{background:var(--acc);color:var(--bg);border-color:var(--acc)}
+.grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.day{aspect-ratio:1;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:12px;font:inherit;font-size:1.1rem;position:relative}
+.day.lock{opacity:.4}.day.sel{outline:2px solid var(--acc)}
+.day.done{border-color:var(--ok);color:var(--ok)}.day.done::after{content:"✓";position:absolute;right:5px;top:1px;font-size:.7rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:12px}
+.card h2{margin:0 0 4px;font-size:1.15rem}.reg{color:var(--mut);font-size:.85rem;margin:0 0 8px}
+form{display:flex;gap:8px;margin-top:10px}
+input{flex:1;min-width:0;padding:11px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:inherit;text-transform:uppercase}
+.go{padding:11px 16px;border:0;border-radius:10px;background:var(--acc);color:var(--bg);font:inherit}
+.msg{min-height:1.4em;margin:8px 0 0;font-size:.9rem}.bad{color:#c0504d}.good{color:var(--ok)}
+.log{border-left:3px solid var(--acc);padding:2px 0 2px 12px;margin:0 0 14px}.log b{display:block}
+.runes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.rune{text-align:center;border:1px solid var(--line);border-radius:12px;padding:10px 2px;background:var(--card);opacity:.3}
+.rune.got{opacity:1;border-color:var(--acc);animation:glow 3s ease-in-out infinite}
+.rune i{display:block;font-style:normal;font-size:1.9rem;line-height:1.2}.rune small{font-size:.7rem;color:var(--mut)}
+@keyframes glow{50%{box-shadow:0 0 14px var(--acc)}}
+svg{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px}
+svg text{fill:var(--fg);font-family:Georgia,serif}
+.hid{display:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+@media (prefers-reduced-motion:reduce){.rune.got{animation:none}}
+html:root:root{--bg:#0b1030;--fg:#f6efd9;--card:rgba(22,28,72,.8);--mut:#aeb8dc;--acc:#ffd36e;--ok:#7be0a4;--line:rgba(255,211,110,.35);color-scheme:dark}
+body{font-family:'IM Fell English',Georgia,serif;font-size:17px;background:radial-gradient(ellipse at 50% -10%,#2f3fa0 0,#0b1030 55%,#05071a 100%) fixed}
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(90,255,200,.10) 45%,rgba(190,120,255,.12) 60%,transparent 75%);animation:aur 14s ease-in-out infinite alternate}
+@keyframes aur{from{transform:translateX(-12%) skewX(-6deg);opacity:.5}to{transform:translateX(12%) skewX(6deg);opacity:1}}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff,transparent),radial-gradient(1px 1px at 90px 80px,#ffe9a8,transparent),radial-gradient(1.5px 1.5px at 150px 20px,#fff,transparent),radial-gradient(1px 1px at 60px 150px,#fff,transparent),radial-gradient(1px 1px at 170px 130px,#ffe9a8,transparent);background-size:200px 180px;animation:tw 5s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.4}to{opacity:1}}
+.garland{position:fixed;top:0;left:0;right:0;height:26px;z-index:3;display:flex;justify-content:space-around;pointer-events:none;border-top:3px solid #2c5a3a}
+.garland i{width:10px;height:14px;border-radius:50% 50% 55% 55%;margin-top:3px;animation:bl 2.4s ease-in-out infinite}
+@keyframes bl{50%{opacity:.35;transform:scale(.8)}}
+main{padding-top:34px}
+h1{font-family:'Cinzel Decorative',Georgia,serif;font-size:1.7rem;color:var(--acc);text-shadow:0 0 14px rgba(255,211,110,.55),0 2px 0 #7a4b00;letter-spacing:.03em}
+.sub{font-style:italic}
+.mascots{display:flex;justify-content:center;gap:22px;font-size:2rem;margin:2px 0 4px}
+.mascots span{display:inline-block;animation:fl 3.6s ease-in-out infinite}.mascots span:nth-child(2){animation-delay:.8s}.mascots span:nth-child(3){animation-delay:1.6s}
+.mascots span:first-child{filter:grayscale(1) brightness(2.2)}
+@keyframes fl{50%{transform:translateY(-7px) rotate(4deg)}}
+.card,.day,.rune,nav button,svg{backdrop-filter:blur(3px);box-shadow:0 0 0 1px rgba(255,211,110,.12),0 6px 18px rgba(0,0,0,.35)}
+.card{border-radius:16px;border:1px solid var(--line);background:linear-gradient(160deg,rgba(40,48,110,.85),rgba(18,22,60,.85))}
+.card h2{font-family:'Cinzel Decorative',Georgia,serif;color:var(--acc);font-size:1.05rem}
+.day{background:linear-gradient(160deg,#27316f,#141a47);font-family:'Cinzel Decorative',Georgia,serif;font-size:1rem}
+.day:not(.lock):not(.done){border-color:var(--acc);animation:pulse 3s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 12px rgba(255,211,110,.6)}}
+.day.done{background:linear-gradient(160deg,#1d5b44,#10331f)}
+.rune.got{background:linear-gradient(160deg,#4a3b10,#1c1a40);color:var(--acc);text-shadow:0 0 10px var(--acc)}
+.rune.got{animation:glow 3s ease-in-out infinite}
+.go{background:linear-gradient(180deg,#ffe28f,#e0a93a);color:#3a2400;font-weight:bold}
+.foot{display:flex;gap:10px;justify-content:center;margin:20px 0 6px}
+.foot button{padding:8px 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit;font-size:.9rem}
+#mm{display:none;margin-top:10px}
+.realm{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.realm svg{width:100%;height:100%;background:none;border:0;box-shadow:none;border-radius:0;backdrop-filter:none}
+body{background:linear-gradient(to top,#eaf7ff 0,#cfeafb 9vh,transparent 20vh),radial-gradient(ellipse at 50% -10%,#2f3fa0 0,#0b1030 55%,#05071a 100%) fixed}
+h1.ice{font-family:'Cinzel Decorative',Georgia,serif;font-size:2.7rem;margin:10px 0 0;letter-spacing:.06em;background:linear-gradient(180deg,#fff 0%,#d6f6ff 38%,#6cc2f0 74%,#e6fbff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:.7px rgba(170,230,255,.8);text-shadow:none;filter:drop-shadow(0 0 10px rgba(140,225,255,.85));animation:ice 5s ease-in-out infinite alternate}
+@keyframes ice{to{filter:drop-shadow(0 0 20px rgba(190,240,255,1))}}
+.icl{display:block;width:62%;margin:-4px auto 0;height:auto;filter:drop-shadow(0 0 5px rgba(150,225,255,.8))}
+.kingdom{text-align:center;margin:2px 0 6px;font-style:italic;color:#bfe9ff;letter-spacing:.12em;text-transform:uppercase;font-size:.8rem}
+.story{display:block;white-space:pre-line;line-height:1.65;margin:10px 0}
+.log .story{margin:4px 0 0}
+#yt{position:fixed;left:-20px;bottom:0;width:10px;height:10px;opacity:0;pointer-events:none;overflow:hidden}
+#yt iframe{width:100%;height:100%;border:0}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class='realm' aria-hidden='true'><svg viewBox='0 0 400 800' preserveAspectRatio='xMidYMax meet' style='overflow:visible'><defs><linearGradient id='ic' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#f0fcff'/><stop offset='1' stop-color='#7cc4ec'/></linearGradient><radialGradient id='mn'><stop offset='0' stop-color='#fff' stop-opacity='.9'/><stop offset='1' stop-color='#bfe8ff' stop-opacity='0'/></radialGradient></defs><circle cx='300' cy='130' r='85' fill='url(#mn)'/><circle cx='300' cy='130' r='34' fill='#f6fcff'/><path d='M-600 580 L-540 480 L-480 530 L-420 450 L-350 525 L-280 465 L-200 540 L-130 460 L-60 530 L0 480 L60 470 L110 520 L180 430 L250 515 L320 450 L400 520 L470 460 L540 520 L610 440 L690 520 L770 455 L850 525 L930 450 L1000 520 L1000 900 L-600 900Z' fill='#2a4a98' opacity='.85'/><path d='M-600 630 L-520 560 L-450 620 L-370 545 L-290 610 L-200 550 L-120 620 L-50 560 L30 610 L90 550 L150 610 L250 600 L310 540 L380 610 L450 550 L530 620 L610 555 L700 620 L780 560 L860 620 L940 565 L1000 620 L1000 900 L-600 900Z' fill='#3b72b8' opacity='.92'/><g fill='url(#ic)' stroke='#e2f8ff' stroke-width='1' opacity='.96'><rect x='125' y='520' width='150' height='120'/><rect x='182' y='410' width='36' height='230'/><polygon points='176,410 200,300 224,410'/><rect x='128' y='470' width='28' height='170'/><polygon points='122,470 142,405 162,470'/><rect x='244' y='470' width='28' height='170'/><polygon points='238,470 258,405 278,470'/><rect x='96' y='560' width='22' height='80'/><polygon points='92,560 107,515 122,560'/><rect x='282' y='560' width='22' height='80'/><polygon points='278,560 293,515 308,560'/></g><g fill='#ffe9a8'><rect x='195' y='440' width='6' height='12'/><rect x='195' y='480' width='6' height='12'/><rect x='137' y='500' width='6' height='12'/><rect x='253' y='500' width='6' height='12'/><rect x='168' y='560' width='8' height='14'/><rect x='224' y='560' width='8' height='14'/><rect x='194' y='590' width='12' height='50'/></g><path d='M-600 650 Q-300 620 0 645 Q200 615 400 640 Q700 620 1000 650 L1000 900 L-600 900Z' fill='#eaf7ff'/><g fill='#bfeaff' stroke='#fff' opacity='.9'><path d='M20 800 L38 690 L56 800Z'/><path d='M340 800 L362 700 L384 800Z'/><path d='M60 800 L70 742 L84 800Z'/><path d='M310 800 L318 750 L330 800Z'/></g></svg></div><canvas id="snow"></canvas>
+<div class="garland" id="gar"></div>
+<div id="yt"></div>
+<main>
+<h1 class="ice">Givrelune</h1>
+<svg class="icl" viewBox="0 0 300 24" aria-hidden="true" style="background:none;border:0;box-shadow:none;border-radius:0;backdrop-filter:none"><g fill="#d6f6ff" fill-opacity=".9"><path d="M10 0l5 14 5-14zM45 0l6 20 6-20zM85 0l4 11 4-11zM120 0l7 24 7-24zM165 0l5 13 5-13zM200 0l6 21 6-21zM240 0l4 12 4-12zM270 0l6 17 6-17z"/></g></svg>
+<p class="kingdom">Le Royaume des Glaces · Le Grimoire des Veilles</p>
+<p class="sub"><span id="cnt">0</span> / 24 runes · l’Étoile de Givrelune</p>
+<nav>
+<button data-t="cal" class="on">Calendrier</button><button data-t="chr">Chronique</button><button data-t="run">Runes</button><button data-t="map">Carte</button>
+</nav>
+<section id="cal"><div class="grid" id="grid"></div><div class="card" id="panel"><p class="reg">Touche un jour pour commencer.</p></div></section>
+<section id="chr" class="hid"></section>
+<section id="run" class="hid"><div class="runes" id="runes"></div></section>
+<section id="map" class="hid"></section>
+<div class="foot"><button id="mus">🎵 Musique</button><button id="key">🗝️ Maître du jeu</button></div>
+<form id="mm" class="card"><b>🗝️ Accès Maître du jeu</b><div style="display:flex;gap:8px;margin-top:8px"><input id="pw" type="password" autocomplete="off" placeholder="Mot de passe"><button class="go">Entrer</button></div><p class="msg" id="mmsg"></p></form>
+</main>
+<script>
+var H=["20bd37bed8901c380738","c69f31a63142c4603cb7","aea3815229008ada96fb","f7e2c1700127be7792da","fbed55ca26f8ab6e9690","e45df8ba8d8dd609ea11","cee548e7d1d7154e0f86","3fcf98775a78d5049014","9d11b443610d6dcd1c6a","f0833d0382af0a589587","76808643cb7c661757fd","05d58897461761b9ad3e","a451ded1823bdcda4af3","8d969e2421152a98e45f","3de225982a36e9ff5e5d","6bfbdb1318cf17412d77","b131db447161c52ae1da","c565b7e6ef9b28b59320","45d689a3faaf311e8277","d0675614f76c7c3d3c43","455cb3a9bbfce015fed2","61b17abdf7a4d2da3cec","8bcfbd4db13280625cc9","775ea22c69a1c39d3c61"];
+var G="ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ".split("");
+var RN="Fehu Uruz Thurisaz Ansuz Raidho Kenaz Gebo Wunjo Hagalaz Nauthiz Isa Jera Eihwaz Perthro Algiz Sowilo Tiwaz Berkano Ehwaz Mannaz Laguz Ingwaz Dagaz Othala".split(" ");
+var R=[["La Forêt des Murmures",1,6,60,370],["Le Village des Horloges Gelées",7,12,235,305],["Les Cavernes de Cristal",13,18,85,215],["Le Château de Brume",19,23,240,120],["La Tour de l’Étoile",24,24,160,42]];
+var D=[
+["La Lettre d’Aldéa","Aldéa t’a confié le Grimoire des Veilles. Il faut appeler Givre, le gardien blanc."],
+["Le Chat qui murmurait","Givre, chat blanc de la taille d’un loup, t’a guidé vers le grand sapin."],
+["Les Empreintes","Sous le sapin, Pimprenelle la luciole et Grelot le dragonnet rejoignent ton équipe."],
+["Le Pont des Murmures","Le pont de glace s’est dégelé devant le nom de la neige."],
+["La Lanterne de Givre","La Lanterne est allumée : la forêt est moins sombre."],
+["Le Seuil de la Forêt","Le vent du nord s’est levé et a dissipé la brume. La forêt est derrière toi."],
+["Les Horloges Gelées","Au village, les cadrans ont répondu à l’elfe en toi."],
+["Les Rouages","Maître Tic a remis ses rouages en place."],
+["Le Carillon Brisé","La cloche fendue a sonné : le village se souvient du temps."],
+["Le Voleur de Pendule","Corbeau, le voleur de la Pendule, a été démasqué."],
+["L’Heure de la Magie","Minuit a sonné : la Pendule bat de nouveau et le temps repart."],
+["Le Cadran de Lune","La lune s’est levée. Un chemin d’argent mène aux Cavernes de Cristal."],
+["La Porte de Cristal","La porte s’est ouverte : le prisme attendait qu’on le nomme."],
+["L’Arc-en-ciel Brisé","Les couleurs reviennent dans les cavernes, une à une."],
+["La Grotte des Échos","L’écho a répondu et révélé la grotte cachée."],
+["Les Signaux de Pimprenelle","Pimprenelle a signalé la lumière : les cristaux brillent."],
+["Le Golem de Cristal","Le golem s’est incliné devant ta logique."],
+["La Perle d’Aurore","La Perle d’Aurore est à toi. La sortie des cavernes est ouverte."],
+["Le Château de Brume","Tu as nommé le Silence et il a reculé."],
+["La Salle des Braises","Grelot a ravivé la Flamme : la porte de glace a fondu."],
+["Les Trois Portes","Les trois portes se sont ouvertes sur la salle du miroir."],
+["Le Nom Oublié","Morneval avait un nom : Élian, premier apprenti d’Aldéa, qui voulait figer Noël par peur de le perdre."],
+["Le Cercle des Vingt-Trois","Le cercle des runes est presque complet. L’Étoile attend un dernier geste."],
+["La Nuit de l’Étoile","Tu as partagé, et l’Étoile s’est rallumée. Élian est rentré. Joyeux Noël !"]];
+var C=[
+["Il neigeait depuis le matin quand Mélanie trouva sur le seuil une enveloppe scellée de cire argentée. À l’intérieur, un grimoire à la couverture de givre, si froid qu’il fumait entre ses doigts, et une lettre d’une écriture fine, légèrement tremblante.\n\nAu loin, par-delà les toits, elle crut voir une étoile vaciller, comme une bougie dans un courant d’air. Elle déplia la lettre.","Le mot s’éveilla sur la page, lettre après lettre, et une brise tiède fit frémir les feuillets. Dans l’air glacé, un souffle doux répondit : quelqu’un, quelque part, avait entendu son appel. Mélanie posa la main sur la couverture. Le Grimoire des Veilles venait de s’ouvrir pour elle."],
+["Cette nuit-là, Mélanie dormit mal. Vers minuit, un craquement léger la tira du lit : sur le rebord de la fenêtre, deux yeux de glace pâle brillaient dans le noir. Un chat entra sans bruit, un chat blanc comme la neige, aussi grand qu’un loup, dont les pas ne laissaient aucune trace sur le parquet.\n\nIl s’assit devant elle, la regarda longuement, puis laissa tomber de sa gueule un petit parchemin couvert de signes étranges. Il semblait attendre qu’elle comprenne.","Les lettres retrouvèrent leur place et le chat cligna lentement des yeux, comme on dit merci. Il se leva, se glissa dehors, et la neige se creusa devant lui d’un sentier à peine visible, qui s’enfonçait vers le fond du jardin, là où se dressait le plus vieil arbre des environs."],
+["Au pied du grand arbre, Mélanie découvrit des empreintes de toutes sortes : de larges coussinets, de minuscules sabots, et des taches grises et fondues, comme si de l’encre avait coulé sur la neige. Soudain, une petite lumière tremblante jaillit d’une branche, suivie d’une volute de fumée et d’un éternuement fracassant.\n\n« Atchoum ! Pardon ! » Une luciole grosse comme un pouce se cachait derrière une aile, tandis qu’un dragonnet à grelot toussotait des étincelles. « Nous sommes Pimprenelle et Grelot ! chuchota la luciole. Surtout, ne marche pas sur les taches noires. C’est de la Brume. »","La piste livra son secret et la lumière de Pimprenelle se mit à danser de joie. Grelot, lui, avait déjà posé sa petite patte griffue sur la botte de Mélanie, comme pour dire : « Où tu vas, on va. » Derrière eux, le chat blanc attendait, la queue dressée. L’équipe était au complet."],
+["Le sentier mènait à un pont de glace jeté sur un torrent figé. Il ne faisait pas plus de trois pas de large, et il chantait sous le vent d’une voix craquante, comme un violon qu’on accorde. Quand Mélanie avança le pied, une voix gelée s’éleva du parapet : « Nul ne passe sans me dire mon nom. »\n\nPimprenelle se cacha dans le col de Mélanie. Grelot, vexé, recula en soufflant une braise qui s’éteignit aussitôt.","À peine le mot fut-il prononcé que le givre se fendit en mille éclats cristallins. Le pont se mit à briller d’un bleu pâle qui rappelait l’aube, et la voix soupira : « Passe, jeune Gardienne. Il y a bien longtemps que personne ne m’avait appelé par mon nom. »"],
+["Au-delà du pont, la forêt devint si sombre que Mélanie ne distinguait plus ses propres mains. Le chat blanc la guida jusqu’à une cabane de garde-forêt dont la porte pendait sur ses gonds. Dedans, sur une table couverte de poussière de glace, une forme sombre était posée. Pimprenelle essaya de l’éclairer, mais sa lumière tremblait trop.\n\nSur la table, quelques lettres s’étaient détachées du Grimoire et flottaient en désordre dans l’obscurité.","Les lettres se rassemblèrent et l’objet s’embrasa d’une flamme claire, dorée, qui chassa les ombres jusque dans les coins. Pimprenelle poussa un petit cri de joie et cessa de trembler. Mélanie leva la lumière devant elle : pour la première fois depuis longtemps, la forêt lui sembla moins hostile."],
+["La clarté les mena jusqu’à la lisière. Là, un mur de brume grise, épais comme un rideau, barrait le chemin. Mélanie y plongea la main : elle ne rencontra que du froid, un froid qui rongeait les souvenirs. Elle revit en un éclair des étoiles, des rires, des cadeaux, puis plus rien.\n\nLe chat blanc leva le museau vers le ciel, et Mélanie comprit ce qu’il voulait dire : il faudrait un vent assez fort pour tout emporter.","Le mot, soufflé du fond du cœur, devint vent. Il s’engouffra dans la brume, la déchira en lambeaux et la dispersa sur les cimes. Devant Mélanie s’ouvrit un chemin d’argent qui descendait vers une vallée où brillaient, tout petits, les toits d’un village. La forêt des Murmures était derrière elle."],
+["Le village était figé. Les cheminées fumaient sans que la fumée monte, un chien courait sans avancer, une marchande tendait un pain d’épice à un enfant, tous deux immobiles comme des statues de sucre. Sur la place, quatre grandes horloges brillaient encore, mais chacune racontait une histoire différente.\n\nGrelot, ravi, s’approcha trop près d’un étal de pain d’épice et dut être rattrapé par la queue.","Les aiguilles tremblent, puis une horloge fit tic… puis tac… Quelque part dans le village, une porte s’ouvrit en grinçant. « Un elfe ! cria une voix fluette. Il y a donc encore quelqu’un pour nous réveiller ! » Mélanie sourit : peut-être que le Grimoire avait eu raison de lui faire confiance."],
+["Un petit homme à barbe blanche, jucbé sur un tabouret, tentait désespérément de remettre en marche une machinerie de laiton. C’était Maître Tic, horloger du village depuis plus de trois cents hivers. « Mes rouages, mes beaux rouages ! gémit-il. Le gel les a tous brouillés. Et j’ai oublié le code du coffre où dorment les clés du temps. »\n\nIl tendit à Mélanie des clochettes, des sapins et des étoiles en cuivre, chacun gravé d’un chiffre.","Le coffre s’ouvrit dans un cliquetis joyeux et Maître Tic essuya une larme de bonheur. « Trois chiffres, trois secrets ! Vous avez l’esprit d’une vraie Gardienne. » Dans le coffre : une cloche minuscule, un fil d’argent, et une pendule privée de ses aiguilles."],
+["Au centre de la place pendait la grande cloche du village, fendue d’une longue fissure. Quand le vent la frôla, elle émit des sons étranges : un long, deux courts, un long… Pimprenelle s’illumina d’un coup : « Elle parle ! Elle essaie de parler ! »\n\nMélanie ferma les yeux et écouta, une main sur le métal froid. Les sons revenaient toujours dans le même ordre, comme un message répété par quelqu’un qui a peur d’être oublié.","La cloche vibra une dernière fois, longuement, puis un son clair retentit dans tout le village. Les habitants s’agitèrent, cliguèrent des yeux, et l’on entendit pour la première fois depuis longtemps un rire d’enfant. La Brume venait de perdre l’une de ses voix."],
+["Mais le bonheur dura peu. Maître Tic poussa un cri : la Pendule du village, celle qui rythme toutes les autres, avait disparu de son socle. Trois suspects s’étaient rassemblés sous le porche : un corbeau noir aux yeux perçants, un renard roux aux moustaches frémissantes, un hibou à l’air solennel.\n\nGrelot grogna, le chat blanc plissa les yeux. Il fallait trouver le coupable avant la nuit.","Sous l’aile du corbeau, on découvrit la Pendule, enveloppée dans un morceau de brume. Il baissa la tête, honteux : « La Brume m’avait promis des plumes d’or. » Mélanie lui tendit la main : « Viens m’aider à réveiller le village. » Le corbeau hésita, puis rendit l’objet. Pimprenelle, perchée sur son épaule, murmura que personne n’est jamais perdu pour de bon."],
+["La Pendule retrouvée restait muette. Maître Tic la posa sur la table de son atelier, ouvrit un petit tiroir et en sortit une longue bande de papier couverte de nombres. « Elle attend l’heure magique, expliqua-t-il, celle où toutes les magies s’éveillent. Je ne m’en souviens plus, mais ma grand-mère l’avait écrite en chiffres, pour que seuls les curieux la trouvent. »\n\nIl tendit la bande à Mélanie avec un clin d’œil.","Le dernier chiffre déchiffré, la Pendule frémit et ses aiguilles reparurent. Elle se mit à battre, d’abord lentement, comme un cœur qui se réveille, puis de plus en plus fort. Dans tout le village, les horloges reprirent leur ronde et les rues s’animèrent. Le temps coulait de nouveau."],
+["Le soir venu, le village entier se rassembla sur la place pour remercier la Gardienne. Les enfants dansaient, la marchande de pain d’épice offrit un sac plein à Grelot, qui faillit s’évanouir de bonheur. Mais le chat blanc fixait le ciel. Au-dessus des montagnes, la lune montait, toute ronde, et son reflet sur le grand cadran dessinait quatre lettres cachées.\n\nLe Grimoire s’agita dans les bras de Mélanie.","La lune se leva tout à fait et traça un chemin d’argent qui montait vers les cimes. « Les Cavernes de Cristal, dit Maître Tic à voix basse. Là-haut, rien n’est jamais ce qu’il semble. » Mélanie salua le village, rangea le Grimoire dans son sac et suivit le chat blanc sur le sentier lumineux."],
+["Après des heures de marche dans la neige poudreuse, ils arrivèrent devant une paroi de glace immense où s’ouvrait une porte de cristal. Mélanie s’en approcha et vit son reflet… mais à l’envers. Les lettres gravées sur le seuil se reflétaient elles aussi à rebours.\n\nPimprenelle, perchée sur son épaule, se vit en double, puis en triple. « C’est un piège ! » souffla Grelot, qui n’avait pas l’habitude des miroirs.","La porte tourna sans bruit sur ses gonds de glace, et un éclat de lumière éblouit Mélanie. Derrière, un monde entier brillait : des colonnes de cristal, des stalactites d’argent, un lac souterrain où dansaient mille reflets. Au plafond, un prisme géant faisait naître, par instants, de minuscules arcs-en-ciel."],
+["Mais la beauté de la caverne était trompeuse : tout y était gris, d’un gris terne et triste. La Brume avait volé les couleurs. Sur un autel de glace, trois pots de peinture attendaient, un rouge, un jaune, un bleu, et un message gravé : « Rendez les couleurs à qui sait les mêler. »\n\nGrelot, curieux, trempa la patte dans le pot rouge et laissa une empreinte sur la neige.","Les couleurs jaillirent des pots et coururent le long des parois. Le violet s’étira comme un chat, le vert s’enroula autour des stalactites, l’orange éclata en feu d’artifice. Pimprenelle pleura de joie : sa lumière prit toutes les teintes à la fois. La caverne retrouvait son âme."],
+["Plus loin, une galerie s’ouvrit sur une grotte immense. Mélanie appela : « Il y a quelqu’un ? » Une voix lui répondit aussitôt : « …quelqu’un… quelqu’un… » Elle sursauta, s’approcha, parla plus bas. La voix l’imita, mot pour mot.\n\nPimprenelle, terrifiée, se cacha derrière le chat blanc, qui ne bougeait pas, les oreilles dressées. Quelque chose se cachait dans les parois et jouait avec eux.","Quand le mot fut dit, la voix hésita, puis éclata d’un rire joyeux : « Enfin quelqu’un qui sait qui je suis ! » Les parois s’écartèrent et révélèrent un passage étroit, éclairé de lueurs bleutées. Au fond, quelque chose clignotait doucement, comme si on les attendait."],
+["Le passage menait à une salle ronde, plongée dans le noir. Seule Pimprenelle brillait, mais elle clignotait de plus en plus vite, par petits éclairs courts et longs, comme si elle voulait dire quelque chose de très important. « Je n’arrive plus à parler, avoua-t-elle, la voix tremblante. J’ai peur. Je peux seulement… allumer et éteindre. »\n\nMélanie sortit son carnet et nota chaque éclat.","À mesure que Mélanie déchiffrait ses signaux, Pimprenelle retrouva son sourire. Soudain, les cristaux alentour s’allumèrent un à un, répondant à la petite luciole, jusqu’à ce que toute la salle brille comme un ciel d’été. « Je n’ai plus peur », murmura Pimprenelle, qui rayonnait."],
+["Un grondement ébranla la caverne. Au fond de la salle, un colosse de glace se leva : un golem de cristal, haut comme une maison, dont les yeux brillaient d’un bleu froid. Il ne criait pas, il ne menaçait pas. Il montra simplement, sur le sol, un carré de pierre divisé en seize cases, dont certaines étaient vides.\n\nGrelot lança une étincelle sur lui : elle ricocha sans effet. Mélanie comprit qu’il fallait résoudre l’énigme plutôt que se battre.","Le dernier chiffre se posa et le golem inclina lentement sa tête immense. Un son profond, presque un soupir, monta de sa poitrine de cristal. Il se rassit, tourna le dos au passage, et la voie s’ouvrit. « Merci », lui dit Mélanie. Il ne répondit pas, mais ses yeux s’adoucirent."],
+["Au fond de la dernière caverne, un coffret d’argent reposait sur un socle de glace. Dessus, cinq cases vides et une inscription : « Ce que tu as appris ouvre ce qui est caché. » Mélanie sortit son carnet. Elle y avait noté chaque réponse, chaque mot, chaque détail.\n\nLe chat blanc s’assit à côté d’elle, la queue enroulée autour des pattes. Pimprenelle se posa sur le couvercle. Grelot, impatient, tapa du pied.","Le couvercle s’ouvrit dans un tintement de clochettes. Au creux du velours, une perle laiteuse, grosse comme une noix, rayonnait d’une lumière douce et chaude : la Perle d’Aurore. En la touchant, Mélanie sentit toute la tristesse des cavernes s’en aller. Au-dessus d’elle, le plafond s’ouvrit sur un ciel étoilé : la sortie."],
+["Au-delà des montagnes se dressait le Château de Brume, un édifice gris, sans fenêtre éclairée, dont les murs semblaient faits de fumée solide. Aucun oiseau ne chantait, aucun vent ne soufflait, pas même un craquement de glace. Le silence était si dense que Mélanie entendit son propre cœur battre.\n\nUne voix glaciale, sans visage, résonna dans les couloirs : « Bienvenue, petite Gardienne. Ici, rien ne change, rien ne finit. Il n’y a que moi. »","À peine eut-elle prononcé le mot que le calme se fendit comme du verre. Un rire étonné, presque humain, traversa les murs. « Comment as-tu osé… » La voix de Morneval trembla un instant. Les lourdes portes du château s’entrouvrirent. Mélanie entra, flanquée du chat blanc, de Pimprenelle et de Grelot."],
+["Dans une grande salle ronde, les murs étaient de glace épaisse et les braises d’une immense cheminée dormaient, éteintes. Une porte de glace barrait le fond, couverte d’inscriptions. « Il faut une flamme, murmura Pimprenelle. Une vraie, une qui n’a pas peur. »\n\nGrelot se mit à trembler, puis se redressa. Il gonfla ses petites ailes, ferma les yeux et fit un pas vers la porte. « Je suis un dragon », dit-il d’une voix qui tremblait à peine.","Grelot souffla. Pas une étincelle, pas une braise : une vraie flamme, éclatante, qui lécha la glace et la fit fondre en un instant. La porte s’effondra en gouttes d’or. Le petit dragonnet s’assit, hors d’haleine, la mine stupéfiée. Mélanie le serra contre elle : « Tu es le plus courageux des dragons. »"],
+["Derrière la porte, un hall sombre. Trois portes de pierre s’alignaient, chacune gravée d’une suite de nombres qui se terminait par un trou. Aucune poignée. Mélanie comprit qu’il fallait compléter chaque suite pour les ouvrir.\n\n« Il faut toutes les ouvrir, souffla Pimprenelle. Une seule ne suffira pas. » Les murs semblaient les épier. Quelque part dans l’ombre, une respiration lente.","Les trois portes s’ouvrirent ensemble, comme les pages d’un livre. Derrière elles, une salle immense, vide, où trônait un miroir couvert d’un voile gris. Au centre de la pièce, quelqu’un attendait, immobile, le dos tourné : une silhouette drâpée de brume, qui tenait dans ses mains un vieux livre aux pages jaunies."],
+["Le Sire Morneval se retourna. Sous la capuche de brume, Mélanie ne vit pas un monstre, mais un visage jeune, fatigué, presque enfantin. Le voile glissa du miroir : il y apparut un apprenti aux joues rondes, un grimoire serré contre la poitrine.\n\n« Avant d’être Morneval, j’avais un nom, dit la voix. Aldéa me l’avait donné. J’ai eu si peur que Noël finisse que j’ai voulu le figer à jamais. Mais ce qu’on fige s’éteint. Je ne m’en souviens plus. Aide-moi. »","Le nom brilla dans le miroir, lettre après lettre. À sa lecture, le visage de Morneval se détendit et la brume tomba de ses épaules comme un manteau trop lourd. « Élian… murmura-t-il. Oui, c’est moi. » Il leva vers Mélanie des yeux humides, remplis de gratitude : « Merci de m’avoir rappelé qui j’étais. »"],
+["Élian posa la main sur le Grimoire. Alors, les vingt-trois runes que Mélanie avait gagnées s’élevèrent dans les airs et se mirent à tourner autour d’eux, formant un grand cercle de lumière. Mais au centre de ce cercle, un carré magique s’était effacé : sans lui, rien ne pouvait tenir.\n\nLe chat blanc posa une patte sur le sol, Pimprenelle éclaira la page, Grelot veilla, la queue enroulée autour des pattes. Mélanie prit son crayon.","Les chiffres s’inscrivirent dans le carré et le cercle de runes tourna plus vite, plus clair, plus chaud. Une lumière douce monta vers le plafond du château, qui se déchira comme un voile. Au loin, tout au bout du ciel, une étoile presque éteinte se remit à battre, faiblement. Il ne manquait plus qu’un geste."],
+["Ils montèrent tous ensemble jusqu’au sommet de la Tour de l’Étoile : Mélanie, Élian, le chat blanc, Pimprenelle, Grelot, et Aldéa enfin retrouvée, dont la voix revenait doucement. Il était minuit. Vingt-trois runes brillaient au-dessus du cristal central, mais la vingt-quatrième manquait.\n\n« Je ne sais pas comment la rallumer, avoua Élian. » Aldéa sourit : « Il faut ce que Noël a de plus précieux. » Tous se rapprochèrent.","Mélanie prononça le dernier mot. Alors chacun posa la main sur le cristal : Élian, Aldéa, Givre, Pimprenelle, Grelot. La vingt-quatrième rune s’alluma et l’Étoile éclata en une lumière dorée qui embrasa le ciel entier. Dans tout Givrelune, les cloches sonnèrent, les villageois sortirent dans la rue, les enfants s’éveillèrent en riant.\n\n« Merci, Mélanie, dit Aldéa. Le Grimoire sait ce qu’il fait. » Élian pleurait de joie. Sur le seuil de la Tour, Givre ronronna : il avait enfin retrouvé sa maison. Joyeux Noël, Gardienne."]
+];
+var S={solved:{}},cur=0,$=function(i){return document.getElementById(i)};
+try{var s=localStorage.getItem("gv26");if(s)S=JSON.parse(s)}catch(e){}
+function save(){try{localStorage.setItem("gv26",JSON.stringify(S))}catch(e){}}
+var M=false;try{M=sessionStorage.getItem("gvm")==="1"}catch(e){}
+function open_(n){return M||new Date()>=new Date(2026,11,n)}
+function reg(n){return R.findIndex(function(r){return n>=r[1]&&n<=r[2]})}
+function norm(t){return t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toUpperCase().replace(/[^A-Z0-9]/g,"")}
+async function hx(n,a){var b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode("gv26:"+n+":"+a));return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("").slice(0,20)}
+function count(){return Object.keys(S.solved).length}
+function render(){
+$("cnt").textContent=count();
+var g=$("grid");g.innerHTML="";
+for(var n=1;n<=24;n++){(function(n){var b=document.createElement("button");b.className="day"+(S.solved[n]?" done":"")+(open_(n)?"":" lock")+(cur===n?" sel":"");b.textContent=open_(n)?n:"🔒";b.onclick=function(){cur=n;render();panel()};g.appendChild(b)})(n)}
+var c="";for(var i=1;i<=24;i++)if(S.solved[i])c+='<div class="log"><b>Jour '+i+' · '+D[i-1][0]+'</b><span class="story">'+C[i-1][0]+'\n\n'+C[i-1][1]+'</span></div>';
+$("chr").innerHTML='<div class="card"><div class="log"><b>Prologue</b>La Brume avance sur Givrelune et l’Étoile vacille. Aldéa, la Gardienne, affaiblie, a confié le Grimoire des Veilles à Mélanie. Il reste vingt-quatre nuits pour sauver Noël.</div>'+c+'</div>';
+$("runes").innerHTML=G.map(function(r,i){var o=S.solved[i+1];return'<div class="rune'+(o?" got":"")+'"><i>'+(o?r:"?")+'</i><small>'+(o?RN[i]:"Jour "+(i+1))+'</small></div>'}).join("");
+var m='<svg viewBox="0 0 320 420" role="img" aria-label="Carte de Givrelune"><path d="M60 370 Q150 360 235 305 T85 215 T240 120 T160 42" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="3" stroke-dasharray="6 6"/>';
+R.forEach(function(r,i){var v=open_(r[1]),k=0;for(var d=r[1];d<=r[2];d++)if(S.solved[d])k++;
+m+='<g opacity="'+(v?1:.3)+'"><circle cx="'+r[3]+'" cy="'+r[4]+'" r="20" fill="'+(k==r[2]-r[1]+1?"var(--ok)":"var(--acc)")+'"/><text x="'+r[3]+'" y="'+(r[4]+6)+'" text-anchor="middle" font-size="16" style="fill:var(--bg)">'+(v?k+"/"+(r[2]-r[1]+1):"?")+'</text><text x="'+r[3]+'" y="'+(r[4]+38)+'" text-anchor="middle" font-size="12">'+(v?r[0]:"Terre inconnue")+'</text></g>'});
+$("map").innerHTML=m+"</svg>"}
+function panel(){
+var p=$("panel"),n=cur;if(!n)return;var d=D[n-1],r=R[reg(n)][0];
+var h='<h2>Jour '+n+' · '+(open_(n)?d[0]:"???")+'</h2><p class="reg">'+(open_(n)?r:"Cette page s’ouvrira le "+n+" décembre.")+'</p>';
+if(S.solved[n])h+='<div class="story">'+C[n-1][0]+'</div><div class="story">'+C[n-1][1]+'</div><p class="good">Rune '+G[n-1]+' '+RN[n-1]+' obtenue.</p>';
+else if(open_(n))h+='<div class="story">'+C[n-1][0]+'</div><p>Ouvre l’enveloppe '+n+' et saisis la réponse :</p><form id="f"><input id="a" autocomplete="off" autocapitalize="characters" placeholder="Ta réponse"><button class="go">Valider</button></form><p class="msg" id="m"></p>';
+if(M)h+='<p class="reg">🗝️ Maître du jeu : <button class="go" id="mt">'+(S.solved[n]?"Annuler la résolution":"Valider ce jour")+'</button></p>';p.innerHTML=h;var mt=$("mt");if(mt)mt.onclick=function(){if(S.solved[n])delete S.solved[n];else S.solved[n]=1;save();render();panel()};var f=$("f");if(f)f.onsubmit=async function(e){e.preventDefault();var a=norm($("a").value),m=$("m");if(!a)return;
+var ok=false;try{ok=(await hx(n,a))===H[n-1]}catch(x){m.className="msg bad";m.textContent="Ce navigateur ne peut pas vérifier le code.";return}
+if(ok){S.solved[n]=1;save();if(navigator.vibrate)navigator.vibrate(60);render();panel()}else{m.className="msg bad";m.textContent="Ce n’est pas la bonne réponse. La Brume se moque de toi… Réessaie."}}}
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll("nav button").forEach(function(x){x.classList.toggle("on",x===b)});["cal","chr","run","map"].forEach(function(t){$(t).classList.toggle("hid",t!==b.dataset.t)})}});
+render();
+(function(){if(matchMedia("(prefers-reduced-motion:reduce)").matches)return;var c=$("snow"),x=c.getContext("2d"),f=[];function z(){c.width=innerWidth;c.height=innerHeight}z();addEventListener("resize",z);
+for(var i=0;i<40;i++)f.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:1+Math.random()*2,v:.3+Math.random()});
+(function t(){x.clearRect(0,0,c.width,c.height);x.fillStyle="rgba(150,175,210,.55)";f.forEach(function(p){p.y+=p.v;p.x+=Math.sin(p.y/40)*.4;if(p.y>c.height){p.y=-5;p.x=Math.random()*c.width}x.beginPath();x.arc(p.x,p.y,p.r,0,7);x.fill()});requestAnimationFrame(t)})()})();
+(function(){var C=["#e74c3c","#f1c40f","#2ecc71","#3498db","#e67e9c"],g=$("gar");for(var i=0;i<16;i++){var b=document.createElement("i");b.style.background=C[i%5];b.style.boxShadow="0 0 8px "+C[i%5];b.style.animationDelay=(i*.3)+"s";g.appendChild(b)}})();
+$("key").onclick=function(){var f=$("mm");if(M){M=false;try{sessionStorage.removeItem("gvm")}catch(e){}$("key").textContent="🗝️ Maître du jeu";render();panel();return}f.style.display=f.style.display==="block"?"none":"block"};
+$("mm").onsubmit=async function(e){e.preventDefault();var m=$("mmsg"),ok=false;try{ok=(await hx(0,norm($("pw").value)))==="0f0865d8158accd027a9"}catch(x){}
+if(ok){M=true;try{sessionStorage.setItem("gvm","1")}catch(x){}$("mm").style.display="none";$("pw").value="";$("key").textContent="🗝️ Quitter le mode Maître";render();panel()}else{m.className="msg bad";m.textContent="Mot de passe incorrect."}};
+if(M)$("key").textContent="🗝️ Quitter le mode Maître";
+var mp=false,started=false;
+function mon(){if(mp)return;mp=true;$("yt").innerHTML='<iframe src="https://www.youtube.com/embed/TkodnfN4kUQ?autoplay=1&loop=1&playlist=TkodnfN4kUQ&controls=0" allow="autoplay; encrypted-media" title="Musique" width="10" height="10"></iframe>';$("mus").textContent="🔇 Couper la musique"}
+function moff(){mp=false;$("yt").innerHTML="";$("mus").textContent="🎵 Musique"}
+$("mus").onclick=function(){started=true;mp?moff():mon()};
+document.addEventListener("pointerdown",function(e){if(!started&&e.target!==$("mus")){started=true;mon()}});
+</script>
+</body>
+</html>
