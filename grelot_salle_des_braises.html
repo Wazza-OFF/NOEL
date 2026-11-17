@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grelot — Le Réveil du Dragon</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=IM+Fell+English:ital@0;1&display=swap');
+:root{--gold:#f6c96b;--ice:#9deaff;--fire:#ff6a2b;--night:#080d20;--panel:#101a35}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:22px;color:#fff7e8;background:radial-gradient(ellipse at 50% 0%,#354d7c 0,#182443 36%,#090e20 78%);font-family:'IM Fell English',Georgia,serif;display:grid;place-items:center}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.22;background-image:radial-gradient(2px 2px at 20% 30%,#fff,transparent),radial-gradient(1px 1px at 70% 20%,#fff,transparent),radial-gradient(2px 2px at 85% 75%,#ffe6a8,transparent),radial-gradient(1px 1px at 35% 80%,#fff,transparent);background-size:190px 170px}
+.game{position:relative;width:min(900px,100%);overflow:hidden;border:1px solid #d9b66a88;border-radius:22px;background:linear-gradient(145deg,#141e3bfa,#080e20fa);box-shadow:0 25px 90px #000b,0 0 40px #6f9dff18}
+header{text-align:center;padding:28px 18px 20px;background:linear-gradient(180deg,#d8b76c20,transparent)}
+.eyebrow{font:700 10px Cinzel,serif;letter-spacing:.28em;color:var(--gold)}
+h1,h2,.cinzel{font-family:Cinzel,serif;text-transform:uppercase}
+h1{font-size:clamp(26px,5vw,45px);line-height:1.15;margin:10px 0;color:#fff0c8;text-shadow:0 0 20px #ffbd5c66,2px 3px 0 #392345}
+.subtitle{font-style:italic;color:#c6d4ed;font-size:17px}
+.scene{position:relative;margin:0 20px;min-height:210px;border:1px solid #d8c17a77;border-radius:16px;overflow:hidden;display:grid;place-items:center;text-align:center;background:linear-gradient(180deg,#293d67,#111b36 72%,#090f20)}
+.scene:before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 85%,#ff9b3c33,transparent 45%),linear-gradient(110deg,transparent 25%,#ffffff0b 50%,transparent 75%)}
+.scene .art{font-size:clamp(76px,14vw,118px);filter:drop-shadow(0 10px 14px #000a);z-index:1;animation:levitate 3s ease-in-out infinite}
+.scene .caption{position:absolute;bottom:12px;left:12px;right:12px;z-index:2;color:#f0dfb4;font:12px Cinzel,serif;letter-spacing:.09em}
+@keyframes levitate{50%{transform:translateY(-9px) scale(1.025)}}
+main{padding:22px}
+h2{text-align:center;font-size:clamp(20px,4vw,28px);color:#ffdfa0;margin:0 0 8px}
+p{font-size:16px;line-height:1.55;text-align:center;color:#d8dfed;max-width:660px;margin:8px auto 18px}
+.panel{background:linear-gradient(145deg,#1a2848dd,#0d1730ee);border:1px solid #c6a65b66;border-radius:16px;padding:18px;box-shadow:inset 0 0 28px #92caff09}
+.status{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:11px Cinzel,serif;letter-spacing:.1em;color:#c8d7f0;text-transform:uppercase}
+.sequence{min-height:55px;margin:12px 0 16px;text-align:center;font:bold clamp(30px,7vw,47px) Arial,sans-serif;letter-spacing:.18em;color:var(--gold);text-shadow:0 0 16px #ffbd5c66}
+.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+button{cursor:pointer;border:1px solid #b9dfff88;border-radius:11px;color:#fff;background:linear-gradient(180deg,#405987,#1b2b50);padding:14px 8px;font:bold 19px Arial,sans-serif;box-shadow:0 4px 0 #070c1b;transition:.12s}
+button:hover{filter:brightness(1.2)}button:active{transform:translateY(3px);box-shadow:0 1px 0 #070c1b}
+.primary{display:block;width:100%;margin-top:14px;padding:15px;background:linear-gradient(180deg,#e6ae50,#9e492b);border:1px solid #ffe0a0;color:#21142a;font:800 13px Cinzel,serif;letter-spacing:.12em}
+.ghost{background:transparent;box-shadow:none;color:#c7d3e7;border-color:#ffffff33;font:11px Cinzel,serif}
+.hidden{display:none!important}
+.timer{font:bold 46px Cinzel,serif;text-align:center;color:#ffd27c;text-shadow:0 0 18px #ff9a36aa;margin:8px}
+.timer.danger{color:#ff624f;animation:pulse .45s infinite alternate}
+@keyframes pulse{to{transform:scale(1.07);text-shadow:0 0 24px #ff291c}}
+.progress{height:11px;background:#ffffff1c;border-radius:99px;overflow:hidden;margin:12px 0}
+.bar{height:100%;width:0;background:linear-gradient(90deg,#e6cf7d,#ff7a32);transition:width .15s}
+.enemyfield{position:relative;height:320px;margin-top:14px;border:1px solid #9bb8e855;border-radius:14px;overflow:hidden;background:radial-gradient(ellipse at 50% 100%,#b45a2925,transparent 50%),linear-gradient(180deg,#152548,#080f20)}
+.enemy{position:absolute;width:104px;min-height:110px;padding:7px 5px;border:1px solid #a8d9ff88;border-radius:13px;background:linear-gradient(180deg,#314d76,#121c37);box-shadow:0 5px 16px #0008;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transform:translate(-50%,-50%);font:10px Cinzel,serif;color:#e9f2ff;user-select:none}
+.enemy .monster{font-size:43px;line-height:1.1;filter:drop-shadow(0 3px 5px #0009)}
+.enemy .hp{font:10px Arial,sans-serif;color:#ffcf86}
+.enemy button{padding:5px 8px;font:10px Cinzel,serif;width:100%;border-color:#ffc18a;background:linear-gradient(#c75c3c,#752b30);box-shadow:none}
+.enemy.destroyed{opacity:0;pointer-events:none;transform:translate(-50%,-50%) scale(.3);transition:.25s}
+.enemy:active{filter:brightness(1.6)}
+#message{min-height:22px;color:#ffd38b;font-style:italic;text-align:center}
+.result{font:800 clamp(28px,7vw,48px) Cinzel,serif;letter-spacing:.13em;text-align:center;color:#ffd17a;text-shadow:0 0 25px #ff7822;margin:16px 0}
+@media(max-width:520px){body{padding:8px}.scene{margin:0 10px;min-height:175px}main{padding:14px}.enemyfield{height:360px}.enemy{width:92px;min-height:104px}.panel{padding:13px}}
+</style>
+</head>
+<body>
+<div class="game">
+<header>
+ <div class="eyebrow">Chroniques du royaume oublié · Épreuve XX</div>
+ <h1>La Salle des Braises</h1>
+ <div class="subtitle">Là où la glace tremble devant le feu des anciens dragons</div>
+</header>
+<div class="scene" aria-live="polite">
+ <div class="art" id="art">🐈</div>
+ <div class="caption" id="caption">Au cœur du palais gelé, une ancienne magie attend son heure.</div>
+</div>
+<main>
+<section id="intro">
+ <h2>Le pacte des cinq runes</h2>
+ <p>Une voix résonne sous les voûtes : « Cinq sceaux retiennent le feu dans le cœur de Grelot. Enchaînez les cinq suites sans faillir, avant que le sablier ne soit vide ! »</p>
+ <div class="panel">
+  <div class="status"><span id="roundLabel">Sceau 1 sur 5</span><span>Combinaison imposée</span></div>
+  <div class="progress"><div class="bar" id="roundBar" style="width:0%"></div></div>
+  <div class="timer" id="comboTimer">5.0</div>
+  <p id="comboInstruction">Mémorisez la suite, puis reproduisez-la avant la fin du temps.</p>
+  <div class="sequence" id="sequence">↑ → ↓</div>
+  <div class="keys">
+   <button data-key="↑">↑</button><button data-key="→">→</button><button data-key="↓">↓</button><button data-key="←">←</button>
+  </div>
+  <div id="comboMessage" class="status" style="justify-content:center;margin-top:13px">Le premier sceau vous met à l'épreuve…</div>
+  <button class="primary" id="startCombo">COMMENCER L'ÉPREUVE</button>
+ </div>
+</section>
+
+<section id="transform" class="hidden">
+ <h2>Le dragon est libre !</h2>
+ <p>Le cinquième sceau éclate. Les runes s'embrasent, les ailes de Grelot déchirent l'obscurité et son rugissement fait trembler le palais.</p>
+ <div class="result">🐈‍⬛ ✧ 🐉</div>
+ <div class="panel"><p>Mais les sbires du Roi-Givre surgissent des piliers ! Détruisez-les tous en cliquant plusieurs fois sur chacun. Le temps du combat est réglable.</p>
+ <label class="status" for="fightDuration">Durée du combat (secondes)</label>
+ <div style="display:flex;gap:12px;align-items:center;margin-top:10px">
+  <input id="fightDuration" type="range" min="10" max="90" step="5" value="30" style="flex:1;accent-color:#e7aa52">
+  <strong id="durationValue" class="cinzel">30 s</strong>
+ </div>
+ <button class="primary" id="beginFight">BRISER LES RANGS ENNEMIS</button></div>
+</section>
+
+<section id="fight" class="hidden">
+ <h2>La bataille des gardiens</h2>
+ <p>Les sbires sont dispersés dans la salle. Clique plusieurs fois sur chaque monstre pour épuiser ses forces avant la fin du compte à rebours !</p>
+ <div class="panel">
+  <div class="status"><span>Gardiens détruits : <b id="score">0</b> / 6</span><span>Temps restant</span></div>
+  <div class="timer" id="fightTimer">30</div>
+  <div class="progress"><div class="bar" id="fightBar"></div></div>
+  <div class="enemyfield" id="enemyfield"></div>
+  <div id="message">Frappez les sbires ! Plusieurs coups seront nécessaires.</div>
+ </div>
+</section>
+
+<section id="victory" class="hidden">
+ <h2>Le souffle des braises !</h2>
+ <p>Le dernier gardien s'effondre. Grelot prend une profonde inspiration. Une boule de feu gigantesque jaillit de sa gueule et frappe la porte millénaire. La glace explose en mille éclats étincelants !</p>
+ <div class="result">🔥 FLAMME 🔥</div>
+ <div class="panel"><p><strong>Victoire, héros !</strong> Le mot secret est révélé : communiquez-le au maître du jeu pour poursuivre votre quête.</p><button class="primary" id="replay">RECOMMENCER L'AVENTURE</button></div>
+</section>
+
+<section id="defeat" class="hidden">
+ <h2>Le royaume retient son souffle…</h2>
+ <p>Le temps s'est écoulé. Les gardiens tiennent encore la salle, mais la flamme de Grelot n'est pas éteinte. Rassemblez votre courage et retentez l'épreuve.</p>
+ <div class="panel"><button class="primary" id="retry">REPRENDRE LE COMBAT</button><button class="primary ghost" id="restartAll">RECOMMENCER DEPUIS LES CINQ RUNES</button></div>
+</section>
+</main>
+</div>
+<script>
+(()=>{
+ const rounds=[["↑","→","↓"],["←","↑","↑","→"],["↓","←","→","↑"],["→","→","↓","←","↑"],["↑","←","↓","→","↑","↓"]];
+ let round=0,entered=[],comboInterval=null,comboDeadline=0,comboSeconds=5;
+ let fightInterval=null,fightDeadline=0,fightDuration=30,destroyed=0,active=false;
+ const $=id=>document.getElementById(id);
+ const sections=["intro","transform","fight","victory","defeat"];
+ const enemies=[
+  {name:"Lutin des glaces",emoji:"👺",hp:4,x:17,y:25},
+  {name:"Corbeau maudit",emoji:"🐦‍⬛",hp:3,x:50,y:22},
+  {name:"Gobelin givré",emoji:"👹",hp:5,x:83,y:28},
+  {name:"Spectre du blizzard",emoji:"👻",hp:4,x:25,y:72},
+  {name:"Orque du Nord",emoji:"👿",hp:5,x:55,y:75},
+  {name:"Petit démon",emoji:"😈",hp:3,x:83,y:72}
+ ];
+ function show(id){sections.forEach(s=>$(s).classList.toggle("hidden",s!==id))}
+ function stopCombo(){clearInterval(comboInterval);comboInterval=null}
+ function stopFight(){clearInterval(fightInterval);fightInterval=null;active=false}
+ function setArt(emoji,caption){$("art").textContent=emoji;$("caption").textContent=caption}
+ function renderRound(){
+  entered=[];const seq=rounds[round];$("roundLabel").textContent=`Sceau ${round+1} sur 5`;
+  $("roundBar").style.width=(round/5*100)+"%";$("sequence").textContent=seq.join("  ");
+  $("comboInstruction").textContent=`Mémorise cette suite de ${seq.length} mouvements.`;
+  $("comboMessage").textContent="Observe bien les runes…";
+  $("startCombo").textContent="J'AI MÉMORISÉ — COMMENCER";
+  $("startCombo").disabled=false;
+ }
+ function startRoundTimer(){
+  stopCombo();entered=[];const seq=rounds[round];$("sequence").textContent="· ".repeat(seq.length);
+  $("comboInstruction").textContent="Reproduis maintenant la combinaison !";
+  $("comboMessage").textContent="Vite ! Le sceau se referme !";
+  comboDeadline=Date.now()+comboSeconds*1000;
+  $("startCombo").classList.add("hidden");
+  comboInterval=setInterval(()=>{
+   const left=Math.max(0,(comboDeadline-Date.now())/1000);
+   $("comboTimer").textContent=left.toFixed(1);
+   $("comboTimer").classList.toggle("danger",left<2);
+   if(left<=0){stopCombo();failRound("Trop lent ! Le sceau s'est refermé.");}
+  },50);
+ }
+ function failRound(message){
+  stopCombo();$("comboMessage").textContent=message;
+  $("sequence").textContent="✧ ÉCHEC ✧";
+  $("startCombo").textContent="RÉESSAYER CE SCEAU";
+  $("startCombo").classList.remove("hidden");
+ }
+ function press(key){
+  if($("intro").classList.contains("hidden")||!comboInterval)return;
+  const seq=rounds[round];entered.push(key);
+  $("sequence").textContent=entered.map((v,i)=>v).join("  ");
+  if(key!==seq[entered.length-1]){failRound("Mauvaise rune ! Recommence ce sceau.");return}
+  if(entered.length===seq.length){
+   stopCombo();round++;$("roundBar").style.width=(round/5*100)+"%";
+   if(round===5){$("comboTimer").classList.remove("danger");$("comboTimer").textContent="0.0";show("transform");setArt("🐉🔥","Le dragon ancestral s'éveille. Le feu revient dans le monde !")}
+   else{$("comboMessage").textContent="Sceau brisé ! Le suivant apparaît…";$("sequence").textContent="✓";setTimeout(()=>{if(!$("intro").classList.contains("hidden")){renderRound();$("startCombo").classList.remove("hidden");$("comboTimer").textContent=comboSeconds.toFixed(1)}},650)}
+  }
+ }
+ document.querySelectorAll("[data-key]").forEach(b=>b.addEventListener("click",()=>press(b.dataset.key)));
+ document.addEventListener("keydown",e=>{const map={ArrowUp:"↑",ArrowRight:"→",ArrowDown:"↓",ArrowLeft:"←"};if(map[e.key]){e.preventDefault();press(map[e.key])}});
+ $("startCombo").onclick=()=>{if(!comboInterval){if(entered.length===0 && $("startCombo").textContent.includes("MÉMORISÉ"))startRoundTimer();else startRoundTimer()}};
+ $("fightDuration").oninput=()=>{$("durationValue").textContent=$("fightDuration").value+" s"};
+ function drawEnemies(){
+  $("enemyfield").innerHTML="";
+  enemies.forEach((enemy,i)=>{
+   enemy.current=enemy.hp;
+   const el=document.createElement("div");el.className="enemy";el.style.left=enemy.x+"%";el.style.top=enemy.y+"%";el.dataset.index=i;
+   el.innerHTML=`<div class="monster">${enemy.emoji}</div><div>${enemy.name}</div><div class="hp" id="hp${i}">❤️ ${enemy.current}</div><button type="button">FRAPPER</button>`;
+   el.querySelector("button").addEventListener("click",()=>hitEnemy(i,el));
+   el.addEventListener("click",e=>{if(e.target.tagName!=="BUTTON")hitEnemy(i,el)});
+   $("enemyfield").appendChild(el);
+  });
+ }
+ function hitEnemy(i,el){
+  if(!active||el.classList.contains("destroyed"))return;
+  enemies[i].current--;const hp=$("hp"+i);if(hp)hp.textContent=enemies[i].current>0?"❤️ "+enemies[i].current:"☠";
+  el.style.filter="brightness(1.7)";setTimeout(()=>el.style.filter="",90);
+  if(enemies[i].current<=0){el.classList.add("destroyed");destroyed++;$("score").textContent=destroyed;$("message").textContent=`${enemies[i].name} vaincu ! Continuez !`;if(destroyed===enemies.length)win()}
+ }
+ function startFight(){
+  stopFight();destroyed=0;fightDuration=Number($("fightDuration").value);
+  $("score").textContent="0";$("fightTimer").textContent=fightDuration;$("fightBar").style.width="0%";
+  $("fightTimer").classList.remove("danger");$("message").textContent="Frappez chaque sbire plusieurs fois pour le détruire !";
+  drawEnemies();show("fight");setArt("🐉","Grelot déchaîne sa fureur contre les armées du Roi-Givre !");
+  active=true;fightDeadline=Date.now()+fightDuration*1000;
+  fightInterval=setInterval(()=>{
+   const left=Math.max(0,(fightDeadline-Date.now())/1000);$("fightTimer").textContent=left.toFixed(1);
+   $("fightTimer").classList.toggle("danger",left<6);$("fightBar").style.width=((fightDuration-left)/fightDuration*100)+"%";
+   if(left<=0){stopFight();show("defeat");setArt("🐉","La bataille n'est pas terminée…")}
+  },50);
+ }
+ function win(){stopFight();show("victory");setArt("🐲🔥","La boule de feu de Grelot fracasse la porte de glace !")}
+ $("beginFight").onclick=startFight;$("retry").onclick=startFight;
+ $("restartAll").onclick=()=>{stopFight();round=0;show("intro");setArt("🐈","Au cœur du palais gelé, une ancienne magie attend son heure.");renderRound();$("comboTimer").textContent=comboSeconds.toFixed(1)};
+ $("replay").onclick=()=>{$("restartAll").click()};
+ renderRound();$("comboTimer").textContent=comboSeconds.toFixed(1);
+})();
+</script>
+</body>
+</html>
