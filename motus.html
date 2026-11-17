@@ -197,20 +197,17 @@ function submit() {
   revealRow(result);
   updateKeyboard(result);
 
-  if (guess === TARGET) {
+if (guess === TARGET) {
     gameOver = true;
-    const msgs = ["🎩 Génial !","🔥 Impressionnant !","👏 Bien joué !","😅 De justesse !"];
-    flash(msgs[currentRow] + ` C'était ${TARGET} !`, "win");
-    showRestart();
-  } else if (currentRow === MAX_ROWS - 1) {
-    gameOver = true;
-    flash(`💔 Perdu ! Le mot était ${TARGET}.`, "lose");
-    showRestart();
-  } else {
-    flash(`Essai ${currentRow + 1} sur ${MAX_ROWS}`);
-  }
-  currentRow++;
-  currentCol = 0;
+    flash("🎩 Génial ! C'était " + TARGET + " !", "win");
+    // Marque le jour 24 comme résolu dans le localStorage partagé
+    try {
+        var S = JSON.parse(localStorage.getItem("gv26") || '{"solved":{}}');
+        S.solved[24] = 1;
+        localStorage.setItem("gv26", JSON.stringify(S));
+    } catch(e) {}
+    setTimeout(function(){ window.location.href = "index.html"; }, 2000);
+    return;
 }
 
 function getRow(r) {
