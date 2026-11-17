@@ -26,8 +26,6 @@
   }
   .status.win  { color: #4ade80; }
   .status.lose { color: #f87171; }
-
-  /* Grille */
   .grid {
     display: grid;
     grid-template-rows: repeat(4, 1fr);
@@ -65,8 +63,6 @@
     50%  { transform: rotateX(90deg); }
     100% { transform: rotateX(0); }
   }
-
-  /* Clavier */
   .keyboard {
     display: flex; flex-direction: column; gap: 6px;
     align-items: center;
@@ -88,7 +84,6 @@
   .key.present { background: #ca8a04; }
   .key.absent  { background: #222; color: #555; }
   .key.wide { min-width: 56px; font-size: .75rem; }
-
   .btn-restart {
     margin-top: .5rem;
     padding: .6rem 1.4rem;
@@ -118,7 +113,6 @@ const COLS = 7;
 
 let rows = [], currentRow = 0, currentCol = 0, gameOver = false;
 
-// --- Grille ---
 function buildGrid() {
   const grid = document.getElementById("grid");
   grid.innerHTML = "";
@@ -135,7 +129,6 @@ function buildGrid() {
   }
 }
 
-// --- Clavier ---
 const KB_ROWS = [
   ["A","B","C","D","E","F","G","H","I"],
   ["J","K","L","M","N","O","P","Q","R"],
@@ -159,7 +152,6 @@ function buildKeyboard() {
   });
 }
 
-// --- Logique ---
 function setTile(r, c, letter, cls) {
   const t = document.getElementById(`t-${r}-${c}`);
   t.textContent = letter;
@@ -197,17 +189,26 @@ function submit() {
   revealRow(result);
   updateKeyboard(result);
 
-if (guess === TARGET) {
+  if (guess === TARGET) {
     gameOver = true;
     flash("🎩 Génial ! C'était " + TARGET + " !", "win");
     // Marque le jour 24 comme résolu dans le localStorage partagé
     try {
-        var S = JSON.parse(localStorage.getItem("gv26") || '{"solved":{}}');
-        S.solved[24] = 1;
-        localStorage.setItem("gv26", JSON.stringify(S));
+      var S = JSON.parse(localStorage.getItem("gv26") || '{"solved":{}}');
+      S.solved[24] = 1;
+      localStorage.setItem("gv26", JSON.stringify(S));
     } catch(e) {}
     setTimeout(function(){ window.location.href = "index.html"; }, 2000);
     return;
+  } else if (currentRow === MAX_ROWS - 1) {
+    gameOver = true;
+    flash("💔 Perdu ! Le mot était " + TARGET + ".", "lose");
+    document.getElementById("btnRestart").style.display = "inline-block";
+  } else {
+    flash("Essai " + (currentRow + 1) + " sur " + MAX_ROWS);
+  }
+  currentRow++;
+  currentCol = 0;
 }
 
 function getRow(r) {
@@ -271,18 +272,12 @@ function flash(msg, cls) {
   el.className = "status" + (cls ? " " + cls : "");
 }
 
-function showRestart() {
-  document.getElementById("btnRestart").style.display = "inline-block";
-}
-
-// --- Clavier physique ---
 document.addEventListener("keydown", e => {
   if (e.key === "Enter") handleKey("ENTRER");
   else if (e.key === "Backspace") handleKey("⌫");
   else if (/^[a-zA-Z]$/.test(e.key)) handleKey(e.key.toUpperCase());
 });
 
-// --- Init ---
 function init() {
   currentRow = 0; currentCol = 0; gameOver = false;
   document.getElementById("btnRestart").style.display = "none";
