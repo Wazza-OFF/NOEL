@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motus – Trouve le mot en 4 essais</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #1a1a2e;
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+  h1 { margin: 1rem 0 .3rem; font-size: 1.6rem; letter-spacing: .05em; }
+  .subtitle { color: #aaa; font-size: .9rem; margin-bottom: 1rem; }
+  .status {
+    min-height: 2rem;
+    font-size: 1rem;
+    margin-bottom: .5rem;
+    font-weight: 600;
+  }
+  .status.win  { color: #4ade80; }
+  .status.lose { color: #f87171; }
+
+  /* Grille */
+  .grid {
+    display: grid;
+    grid-template-rows: repeat(4, 1fr);
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+  }
+  .tile {
+    width: 44px; height: 44px;
+    border: 2px solid #3a3a5c;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 700;
+    text-transform: uppercase;
+    transition: transform .12s, background .25s, border-color .25s;
+    background: #16162b;
+  }
+  .tile.filled { border-color: #666; background: #222244; }
+  .tile.correct { background: #16a34a; border-color: #15803d; }
+  .tile.present { background: #ca8a04; border-color: #a16207; }
+  .tile.absent  { background: #333; border-color: #444; color: #777; }
+  .tile.pop { animation: pop .25s ease; }
+  @keyframes pop {
+    0%   { transform: scale(1); }
+    50%  { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .tile.flip { animation: flip .5s ease; }
+  @keyframes flip {
+    0%   { transform: rotateX(0); }
+    50%  { transform: rotateX(90deg); }
+    100% { transform: rotateX(0); }
+  }
+
+  /* Clavier */
+  .keyboard {
+    display: flex; flex-direction: column; gap: 6px;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .kb-row { display: flex; gap: 4px; }
+  .key {
+    min-width: 30px; height: 48px;
+    background: #2a2a4a;
+    border: none; border-radius: 5px;
+    color: #eee; font-size: .9rem; font-weight: 600;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s;
+    user-select: none;
+  }
+  .key:hover { background: #3a3a6a; }
+  .key.correct { background: #16a34a; }
+  .key.present { background: #ca8a04; }
+  .key.absent  { background: #222; color: #555; }
+  .key.wide { min-width: 56px; font-size: .75rem; }
+
+  .btn-restart {
+    margin-top: .5rem;
+    padding: .6rem 1.4rem;
+    font-size: 1rem; font-weight: 600;
+    background: #3a3a6a; color: #fff;
+    border: none; border-radius: 8px; cursor: pointer;
+    display: none;
+  }
+  .btn-restart:hover { background: #4a4a8a; }
+</style>
+</head>
+<body>
+
+<h1>🎯 Motus</h1>
+<p class="subtitle">Trouve le mot de 7 lettres en 4 essais</p>
+<p class="status" id="status"></p>
+
+<div class="grid" id="grid"></div>
+
+<div class="keyboard" id="keyboard"></div>
+<button class="btn-restart" id="btnRestart" onclick="init()">↻ Rejouer</button>
+
+<script>
+const TARGET = "PARTAGE";
+const MAX_ROWS = 4;
+const COLS = 7;
+
+let rows = [], currentRow = 0, currentCol = 0, gameOver = false;
+
+// --- Grille ---
+function buildGrid() {
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+  for (let r = 0; r < MAX_ROWS; r++) {
+    const row = document.createElement("div");
+    row.className = "row";
+    for (let c = 0; c < COLS; c++) {
+      const tile = document.createElement("div");
+      tile.className = "tile";
+      tile.id = `t-${r}-${c}`;
+      row.appendChild(tile);
+    }
+    grid.appendChild(row);
+  }
+}
+
+// --- Clavier ---
+const KB_ROWS = [
+  ["A","B","C","D","E","F","G","H","I"],
+  ["J","K","L","M","N","O","P","Q","R"],
+  ["S","T","U","V","W","X","Y","Z","⌫"]
+];
+function buildKeyboard() {
+  const kb = document.getElementById("keyboard");
+  kb.innerHTML = "";
+  KB_ROWS.forEach(line => {
+    const row = document.createElement("div");
+    row.className = "kb-row";
+    line.forEach(k => {
+      const btn = document.createElement("button");
+      btn.className = "key" + (k === "⌫" ? " wide" : "");
+      btn.textContent = k;
+      btn.dataset.key = k;
+      btn.addEventListener("click", () => handleKey(k));
+      row.appendChild(btn);
+    });
+    kb.appendChild(row);
+  });
+}
+
+// --- Logique ---
+function setTile(r, c, letter, cls) {
+  const t = document.getElementById(`t-${r}-${c}`);
+  t.textContent = letter;
+  if (cls) t.classList.add(cls, "pop");
+  else t.classList.add("filled");
+}
+
+function handleKey(k) {
+  if (gameOver) return;
+  if (k === "⌫") {
+    if (currentCol > 0) {
+      currentCol--;
+      const t = document.getElementById(`t-${currentRow}-${currentCol}`);
+      t.textContent = "";
+      t.className = "tile";
+    }
+    return;
+  }
+  if (k === "ENTRER" || k === "ENTER") {
+    submit();
+    return;
+  }
+  if (k.length !== 1 || currentCol >= COLS) return;
+  setTile(currentRow, currentCol, k);
+  currentCol++;
+}
+
+function submit() {
+  if (currentCol < COLS) {
+    flash("⚠️ Il manque des lettres !");
+    return;
+  }
+  const guess = getRow(currentRow);
+  const result = evaluate(guess);
+  revealRow(result);
+  updateKeyboard(result);
+
+  if (guess === TARGET) {
+    gameOver = true;
+    const msgs = ["🎩 Génial !","🔥 Impressionnant !","👏 Bien joué !","😅 De justesse !"];
+    flash(msgs[currentRow] + ` C'était ${TARGET} !`, "win");
+    showRestart();
+  } else if (currentRow === MAX_ROWS - 1) {
+    gameOver = true;
+    flash(`💔 Perdu ! Le mot était ${TARGET}.`, "lose");
+    showRestart();
+  } else {
+    flash(`Essai ${currentRow + 1} sur ${MAX_ROWS}`);
+  }
+  currentRow++;
+  currentCol = 0;
+}
+
+function getRow(r) {
+  let s = "";
+  for (let c = 0; c < COLS; c++) s += document.getElementById(`t-${r}-${c}`).textContent;
+  return s;
+}
+
+function evaluate(guess) {
+  const res = new Array(COLS).fill("absent");
+  const remaining = {};
+  for (let i = 0; i < COLS; i++) {
+    if (guess[i] === TARGET[i]) {
+      res[i] = "correct";
+    } else {
+      remaining[TARGET[i]] = (remaining[TARGET[i]] || 0) + 1;
+    }
+  }
+  for (let i = 0; i < COLS; i++) {
+    if (res[i] !== "correct" && remaining[guess[i]] > 0) {
+      res[i] = "present";
+      remaining[guess[i]]--;
+    }
+  }
+  return res;
+}
+
+function revealRow(result) {
+  const r = currentRow;
+  for (let c = 0; c < COLS; c++) {
+    const t = document.getElementById(`t-${r}-${c}`);
+    setTimeout(() => {
+      t.classList.add("flip");
+      setTimeout(() => {
+        t.classList.remove("filled");
+        t.classList.add(result[c]);
+      }, 250);
+    }, c * 150);
+  }
+}
+
+function updateKeyboard(result) {
+  const guess = getRow(currentRow);
+  const priority = { correct: 3, present: 2, absent: 1 };
+  for (let i = 0; i < COLS; i++) {
+    const letter = guess[i];
+    const newCls = result[i];
+    const btn = document.querySelector(`.key[data-key="${letter}"]`);
+    if (!btn) continue;
+    const cur = btn.className.replace(/(correct|present|absent)/g, "").trim();
+    const curLevel = cur.includes("correct") ? 3 : cur.includes("present") ? 2 : 0;
+    if (priority[newCls] > curLevel) {
+      btn.className = "key " + newCls;
+    }
+  }
+}
+
+function flash(msg, cls) {
+  const el = document.getElementById("status");
+  el.textContent = msg;
+  el.className = "status" + (cls ? " " + cls : "");
+}
+
+function showRestart() {
+  document.getElementById("btnRestart").style.display = "inline-block";
+}
+
+// --- Clavier physique ---
+document.addEventListener("keydown", e => {
+  if (e.key === "Enter") handleKey("ENTRER");
+  else if (e.key === "Backspace") handleKey("⌫");
+  else if (/^[a-zA-Z]$/.test(e.key)) handleKey(e.key.toUpperCase());
+});
+
+// --- Init ---
+function init() {
+  currentRow = 0; currentCol = 0; gameOver = false;
+  document.getElementById("btnRestart").style.display = "none";
+  document.getElementById("status").textContent = "Essai 1 sur 4";
+  document.getElementById("status").className = "status";
+  buildGrid();
+  buildKeyboard();
+}
+init();
+</script>
+</body>
+</html>   
